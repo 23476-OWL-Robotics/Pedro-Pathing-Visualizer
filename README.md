@@ -3,8 +3,8 @@ Open-Source Visualizer for First Tech Challenge
 
 ## Table of Contents
 
-- [Installation | Android Studio](#installation-android-atudio)
-- [Installation | Development](#installation-development)
+- [Installation | Android Studio](#installation--android-atudio)
+- [Installation | Development](#installation--development)
 - [Usage](#usage)
   - [Adding a Second Bot](#adding-a-second-bot)
   - [Field Rotation and Origin](#field-rotation-and-origin)
