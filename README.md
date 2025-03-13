@@ -6,6 +6,7 @@ Open-Source Visualizer for First Tech Challenge
 - [Installation | Android Studio](#installation--android-studio)
 - [Installation | Development](#installation--development)
 - [Usage](#usage)
+  - [Using the Control Panel](#using-the-control-panel)
   - [Adding a Second Bot](#adding-a-second-bot)
   - [Field Rotation and Origin](#field-rotation-and-origin)
   - [Using Custom Images](#using-custom-images)
@@ -80,8 +81,8 @@ Open-Source Visualizer for First Tech Challenge
                     .build());
         
             visualizer
-                    .setPlaneOrigin(PlaneOrigin.BOTTOM_LEFT)
                     .setBackground(Backgrounds.IntoTheDeep_DARK)
+                    .setPlaneOrigin(PlaneOrigin.BOTTOM_LEFT)
                     .addEntity(myBot)
                     .start();
         }
@@ -125,10 +126,66 @@ If it brings up any errors, please look at the [Issues](#issues) section.
 6. Build that Artifact by going to `Build -> Build Artifacts`, selecting your Artifact, then clicking `Build` or `Rebuild`
 
 ## Usage
+### Using the Control Panel
+
+The control panel isn't very complicated and is similer to the Web Based visualizer. The tabs at the top under the name each corrispond to an entity(bot) and allow you to swich between them.
+
+The slider and slider play button at thr bottom of each tab control only that robot and no others. The slider allows you to control where that robot is on its path and the play/pause buttons allows you to start/stop that robots animation.
+
+The play/pause button at the top of the Control Panel control all of the added robots animations and will play/pause all of them if pressed. The reset button simply sets all the robots to the start of there respective paths.
+
 ### Adding a Second Bot
+
+It's really easy to add more bots to the visualizer. There technically isn't a limit but keep in mind that every bot added required its own CPU Thread to animate.
+
+1. Create a new PedroPathingBotEntity and set the Image and Size:
+
+   ```java
+   PedroPathingBotEntity myBot2 = new PedroPathingBotEntity.Builder()
+                .setRobotImage(RobotImages.Pedro_BLUE)
+                .setRobotSize(16, 16)
+                .build();
+   ```
+
+2. Create a new path for that entity to follow:
+
+   ```java
+   myBot2.createNewPath(new PathBuilder()
+                // Robot Path
+                .build());
+   ```
+
+3. Add that botEntity to PathVisualizer using the `.addEntity();` function.
 
 ### Field Rotation and Origin
 
+You can set the Field rotation by using the `.setFieldRotation()` function. It's best to put it directly after `.setBackground()` 
+The rotation angles are 90, 180, and 270. Use the FieldRotation enum inside the `.setFieldRotation()` paranthasis. The import is 
+
+`import com.owlrobotics.pedropathingvisualizer.pedropathing.util.FieldRotation;`
+
+
+You can set the Field origin by using the `.setFieldOrigin()` function. There is an origin enum for each corner of the field as well as the center.
+
+Import: `import com.owlrobotics.pedropathingvisualizer.pedropathing.util.PlaneOrigin;`
+
 ### Using Custom Images
+
+You can use a custom image for both the Robots and the Field, to set an image to a robot use `java.awt.Image` and `java.io.file`
+
+```java
+File file = new File("pathtofile");
+Image cutomBotImage = ImageIO.read(file);
+```
+
+You will notice that ImageIO.read() gives an IO Exeption Error. To fix this simply add `throws IOExeption` to the end of `public static void main(String[] args)`
+
+
+Setting the field image is basically the same thing but with `java.awt.image.BufferedImage` instad
+
+```java
+File file = new File("pathtofile");
+BufferedImage customFiledImage = ImageIO.read(file);
+```
 
 ## Issues
