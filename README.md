@@ -11,6 +11,10 @@ Open-Source Visualizer for First Tech Challenge
   - [Field Rotation and Origin](#field-rotation-and-origin)
   - [Using Custom Images](#using-custom-images)
 - [Issues](#issues)
+  - [Bad Class File](#bad-class-file)
+  - [Unable to initialize main class](#unable-to-initialize-main-class)
+  - [Other Issues not Listed](#other-issues-not-listed)
+- [Bugs](#bugs)
   
 ## Installation | Android Studio
 
@@ -189,3 +193,65 @@ BufferedImage customFiledImage = ImageIO.read(file);
 ```
 
 ## Issues
+### Bad Class File
+
+If you get the following error:
+
+![Screenshot 2025-03-13 182135](https://github.com/user-attachments/assets/ec8d404c-7602-44fe-9eb6-0d16c505374e)
+
+It means that Gradle JDK does not match the Visualizer JDK. To fix the isuue:
+
+1. Download and Install [Java 21](https://www.oracle.com/java/technologies/downloads/#java21)
+
+2. Under the `File` Tab in the Main Menu, Click `Settings`
+
+   ![Screenshot 2025-03-13 182617](https://github.com/user-attachments/assets/dcc6e3fb-17bb-40bf-9c5d-6ac920bf383a)
+
+3. In the Left Hand Menu, navigate to `Build, Exicution, Deployment -> Build Tools -> Gradle`
+
+   ![Screenshot 2025-03-13 182822](https://github.com/user-attachments/assets/a58d27e8-b9e4-446b-9504-3e16566e06c9)
+
+4. From the Gradle JDK Dropdown Menu, Select the `jdk-21` option.
+
+   ![Screenshot 2025-03-13 183009](https://github.com/user-attachments/assets/41cc60d0-30dc-42f7-ba4c-a939e201f64e)
+
+5. Click `Apply` then `Ok` and run a Gradle Sync
+
+The Gradle JDK should now be set to 21 and PedroPathingVisualizer should run.
+
+### Unable to initialize main class
+
+If you get the following error :
+
+![Screenshot 2025-03-13 183454](https://github.com/user-attachments/assets/aa10b7d1-c41f-4584-8209-5b26ac0aed89)
+
+It means that the Configuration Module JDK does not match the PedroPathingVisualizer JDK. To fix the issue:
+
+1. Enter the Configuration Editor by clicking on your Visualizer Configuration, clicking on the the dots on the right, and clicking `Edit`
+
+   ![Screenshot 2025-03-13 183717](https://github.com/user-attachments/assets/33f3107d-9f81-4d74-8de3-29ad37f01ae1)
+
+2. Under the `Build and Run` Section of the configuration, set the First drop down to Java 21
+
+   ![Screenshot 2025-03-13 183956](https://github.com/user-attachments/assets/e659417b-7a1e-4efe-8f3a-4254bd49d325)
+
+   If there is no Java 21 option, please follow the steps in [Bad Class File](#bad-class-file) and return here when finished.
+
+4. Click `Apply` then `Ok`
+
+The Configuration JDK should now be set to the Gradle JDK and PedroPathingVisualizer should run.
+
+### Other Issues not Listed
+
+If you get a different error message than the ones shown or get a gradle sync error after adding the .jar file, please feel free to open an issue at the Github Repo
+
+## Bugs
+
+If you find any bugs when the Visualizer is running, open an issue at the Github Repo and I will try and fix it in the next release.
+
+
+
+
+
+
+
