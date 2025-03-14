@@ -247,7 +247,7 @@ If you get a different error message than the ones shown or get a gradle sync er
 
 ## Bugs
 
-If you find any bugs when the Visualizer is running, open an issue at the Github Repo and I will try and fix it in the next release.
+If you find any bugs when the Visualizer is running, open an issue with the `bug` label at the Github Repo and I will try and fix it in the next release.
 
 
 
