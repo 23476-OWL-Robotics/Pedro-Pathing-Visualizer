@@ -110,6 +110,7 @@ public class FieldPanel extends JPanel {
 
         // Set the xOrigin and yOrigin based on planeOrigin
         xOrigin = planeOrigin.width;
+        System.out.println(xOrigin);
         yOrigin = planeOrigin.height - 10;
 
         // Set the runSingleBotAnimation array size
@@ -380,7 +381,7 @@ public class FieldPanel extends JPanel {
 
             // Get the botLocations and botLocation
             botLocationX[botNumber] = (int) Math.round(
-                    (curvePoints.get(botNumber).get(animate2[botNumber])[0][animate1[botNumber]] * pixelsPerInch) -
+                    (xOrigin + (curvePoints.get(botNumber).get(animate2[botNumber])[0][animate1[botNumber]] * pixelsPerInch)) -
                             (double) entities.get(botNumber).robotSize().width * pixelsPerInch / 2);
             botLocationY[botNumber] = (int) Math.round(
                     (yOrigin - (curvePoints.get(botNumber).get(animate2[botNumber])[1][animate1[botNumber]] * pixelsPerInch) + 10) -
@@ -481,9 +482,9 @@ public class FieldPanel extends JPanel {
 
                     // Draw a line between each drawing point
                     g2d.drawLine(
-                            (int) (Math.round((curvePoints.get(botNumber).get(pathNumber)[0][drawPoint] * pixelsPerInch))),
+                            (int) (Math.round(xOrigin + (curvePoints.get(botNumber).get(pathNumber)[0][drawPoint] * pixelsPerInch))),
                             (int) (Math.round((yOrigin - (curvePoints.get(botNumber).get(pathNumber)[1][drawPoint] * pixelsPerInch) + 10))),
-                            (int) (Math.round((curvePoints.get(botNumber).get(pathNumber)[0][drawPoint+1] * pixelsPerInch))),
+                            (int) (Math.round(xOrigin + (curvePoints.get(botNumber).get(pathNumber)[0][drawPoint+1] * pixelsPerInch))),
                             (int) (Math.round((yOrigin - (curvePoints.get(botNumber).get(pathNumber)[1][drawPoint+1] * pixelsPerInch) + 10))));
                 }
 
@@ -604,7 +605,7 @@ public class FieldPanel extends JPanel {
 
             // Set the point location
             point.setCoordinates(
-                    (e.getXOnScreen() - fieldLocationX - 13 + 5) / pixelsPerInch,
+                    -(xOrigin - (e.getXOnScreen() - fieldLocationX - 13 + 5)) / pixelsPerInch,
                     (yOrigin - (e.getYOnScreen() - fieldLocationY - 40)) / pixelsPerInch,
                     Point.CARTESIAN
             );
@@ -754,7 +755,7 @@ public class FieldPanel extends JPanel {
                     distanceToNextBotLocationX[botNumber] =
                             botLocationX[botNumber] -
                                     (int) Math.round(
-                                            curvePoints.get(botNumber).get(animate2[botNumber])[0][animate1[botNumber] + 1] * pixelsPerInch -
+                                            xOrigin + (curvePoints.get(botNumber).get(animate2[botNumber])[0][animate1[botNumber] + 1] * pixelsPerInch) -
                                             (double) entities.get(botNumber).robotSize().width * pixelsPerInch / 2);
                     distanceToNextBotLocationY[botNumber] =
                             botLocationY[botNumber] -
