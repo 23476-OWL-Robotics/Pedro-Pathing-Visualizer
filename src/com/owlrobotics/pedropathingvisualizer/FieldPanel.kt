@@ -46,9 +46,7 @@ class FieldPanel(
 
     // Animation settings
     var runAnimation: Boolean = false
-
-    // Set the runSingleBotAnimation array size
-    var runSingleBotAnimation: BooleanArray = BooleanArray(entities.size)
+    var runSingleBotAnimation: BooleanArray
     var initAnimation: Boolean = false
     var settingAnimationPoints: Boolean = false
     var doUpdate: Boolean = false
@@ -76,7 +74,7 @@ class FieldPanel(
     // X and Y Origin are the locations that the entities will be set to
     // They are set based on the PlaneOrigin set in Path Visualizer
     var xOrigin: Int = planeOrigin.width
-    var yOrigin: Int = planeOrigin.height - 10
+    var yOrigin: Int
 
     // Set the frame time
     // The fps limiter uses nanoTime which is why the first number is so large
@@ -84,12 +82,19 @@ class FieldPanel(
 
     // Arrayed Thread for animating
     // Each robot will get its own thread for animating
-
-    // Set the animation threads array size
-    var threadAnimator: Array<Thread?> = arrayOfNulls(entities.size)
+    var threadAnimator: Array<Thread?>
 
     // com.owlrobotics.pedropathingvisualizer.FieldPanel class constructor
     init {
+        println(xOrigin)
+        yOrigin = planeOrigin.height - 10
+
+        // Set the runSingleBotAnimation array size
+        runSingleBotAnimation = BooleanArray(entities.size)
+
+        // Set the animation threads array size
+        threadAnimator = arrayOfNulls(entities.size)
+
         // Set the Panel size based on the fieldImage size
         val size = Dimension(fieldImg.width, fieldImg.height)
         this.preferredSize = size
@@ -117,8 +122,8 @@ class FieldPanel(
 
             // The number of buttons just defines how many JPanels are needed for each bot
             var numberOfButtons = 0
-            for (pathNumber in 0 until chain[botNumber]!!.size()) {
-                numberOfButtons += chain[botNumber]!!.getPath(pathNumber).controlPoints.size
+            for (pathNumber in 0 until chain[botNumber].size()) {
+                numberOfButtons += chain[botNumber].getPath(pathNumber).controlPoints.size
             }
 
             // Add a new JPanel array of length numberOfButtons to each button arrayList
@@ -133,45 +138,45 @@ class FieldPanel(
             val addToCurvePoints = ArrayList<Array<DoubleArray>>()
 
             // Second for loop for each pathNumber
-            for (pathNumber in 0 until chain[botNumber]!!.size()) {
+            for (pathNumber in 0 until chain[botNumber].size()) {
                 // New random Color for each Path
 
                 val r = Random()
                 val g = Random()
                 val b = Random()
-                chain[botNumber]!!.getPath(pathNumber).pathColor = Color(
+                chain[botNumber].getPath(pathNumber).pathColor = Color(
                     r.nextInt(255),
                     g.nextInt(255),
                     b.nextInt(255)
                 )
 
                 // Set each double in the addToCurvePoints arrayList
-                addToCurvePoints.add(chain[botNumber]!!.getPath(pathNumber).dashboardDrawingPoints)
+                addToCurvePoints.add(chain[botNumber].getPath(pathNumber).dashboardDrawingPoints)
 
                 // The if statements check to see if we are setting the control point buttons on the first path
                 if (pathNumber == 0) {
                     // Third for loop for each point number
 
-                    for (pointNumber in chain[botNumber]!!.getPath(pathNumber).controlPoints.indices) {
+                    for (pointNumber in chain[botNumber].getPath(pathNumber).controlPoints.indices) {
                         // Create a new JPanel for each button
 
                         buttons[botNumber][pointNumber + nextPath] = JPanel()
 
                         // Set the background of each button
                         buttons[botNumber][pointNumber + nextPath]!!.background =
-                            chain[botNumber]!!.getPath(pathNumber).pathColor
+                            chain[botNumber].getPath(pathNumber).pathColor
 
                         // Set the location of each button
                         buttons[botNumber][pointNumber + nextPath]!!.setLocation(
-                            (chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].x * pixelsPerInch).toInt() - 5 + xOrigin,
-                            -(chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].y * pixelsPerInch).toInt() + 5 + yOrigin
+                            (chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].x * pixelsPerInch).toInt() - 5 + xOrigin,
+                            -(chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].y * pixelsPerInch).toInt() + 5 + yOrigin
                         )
 
                         // Set the controlPointLocations
                         // These are used is com.owlrobotics.pedropathingvisualizer.ControlPanel
                         controlPointLocations[botNumber][pointNumber + nextPath] = Point(
-                            chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].x,
-                            (chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].y)
+                            chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].x,
+                            (chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].y)
                         )
 
                         // Set each button to be visible
@@ -203,26 +208,26 @@ class FieldPanel(
                 } else {
                     // Third for loop for each point number
 
-                    for (pointNumber in 1 until chain[botNumber]!!.getPath(pathNumber).controlPoints.size) {
+                    for (pointNumber in 1 until chain[botNumber].getPath(pathNumber).controlPoints.size) {
                         // Create a new JPanel for each button
 
                         buttons[botNumber][pointNumber + nextPath - minusPath] = JPanel()
 
                         // Set the background of each button
                         buttons[botNumber][pointNumber + nextPath - minusPath]!!.background =
-                            chain[botNumber]!!.getPath(pathNumber).pathColor
+                            chain[botNumber].getPath(pathNumber).pathColor
 
                         // Set the location of each button
                         buttons[botNumber][pointNumber + nextPath - minusPath]!!.setLocation(
-                            (chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].x * pixelsPerInch).toInt() - 5 + xOrigin,
-                            -(chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].y * pixelsPerInch).toInt() + 5 + yOrigin
+                            (chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].x * pixelsPerInch).toInt() - 5 + xOrigin,
+                            -(chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].y * pixelsPerInch).toInt() + 5 + yOrigin
                         )
 
                         // Set the controlPointLocations
                         // These are used is com.owlrobotics.pedropathingvisualizer.ControlPanel
                         controlPointLocations[botNumber][pointNumber + nextPath - minusPath] = Point(
-                            (chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].x).toInt().toDouble(),
-                            (chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].y).toInt().toDouble()
+                            (chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].x).toInt().toDouble(),
+                            (chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].y).toInt().toDouble()
                         )
 
                         // Set each button to be visible
@@ -255,7 +260,7 @@ class FieldPanel(
                 }
 
                 // Up nextPath and minusPath
-                nextPath += chain[botNumber]!!.getPath(pathNumber).controlPoints.size
+                nextPath += chain[botNumber].getPath(pathNumber).controlPoints.size
                 minusPath++
             }
 
@@ -271,7 +276,7 @@ class FieldPanel(
                 (curvePoints[botNumber].first()[0][0] - entities[botNumber].robotSize().width * pixelsPerInch / 2).toInt()
             botLocationY[botNumber] =
                 (curvePoints[botNumber].first()[1][0] - entities[botNumber].robotSize().height * pixelsPerInch / 2).toInt()
-            botRotation[botNumber] = chain[botNumber]!!.getPath(0).getHeadingGoal(0.0)
+            botRotation[botNumber] = chain[botNumber].getPath(0).getHeadingGoal(0.0)
 
             // Get the scaled Instance of the botImage
             robotImg[botNumber] = entities[botNumber].robotImage().getScaledInstance(
@@ -308,11 +313,11 @@ class FieldPanel(
         // DrawRobot function draws the robotImage
         DrawRobot(g2d)
 
-        // DrawControlPoints draws the control points of each chain path
-        DrawControlPoints(g2d)
-
         // DrawBezierCurves draws the curves of each path
         DrawBezierCurves(g2d)
+
+        // DrawControlPoints draws the control points of each chain path
+        DrawControlPoints(g2d)
 
         // Repaint updates the rendered screen
         repaint()
@@ -366,7 +371,7 @@ class FieldPanel(
             // Get the botLocations and botLocation
 
             botLocationX[botNumber] = Math.round(
-                (curvePoints[botNumber][animate2[botNumber]][0][animate1[botNumber]] * pixelsPerInch) -
+                (xOrigin + (curvePoints[botNumber][animate2[botNumber]][0][animate1[botNumber]] * pixelsPerInch)) -
                         entities[botNumber].robotSize().width.toDouble() * pixelsPerInch / 2
             ).toInt()
             botLocationY[botNumber] = Math.round(
@@ -374,7 +379,7 @@ class FieldPanel(
                         entities[botNumber].robotSize().height.toDouble() * pixelsPerInch / 2
             ).toInt()
             botRotation[botNumber] =
-                chain[botNumber]!!.getPath(animate2[botNumber]).getHeadingGoal(animate1[botNumber] * 0.01)
+                chain[botNumber].getPath(animate2[botNumber]).getHeadingGoal(animate1[botNumber] * 0.01)
 
             // Save the current g2d transform
             val saveXForm = g2d.transform
@@ -418,19 +423,19 @@ class FieldPanel(
             var minusPath = 0
 
             // Second for loop for each path
-            for (pathNumber in 0 until chain[botNumber]!!.size()) {
+            for (pathNumber in 0 until chain[botNumber].size()) {
                 // Set the g2d Color to the pathColor
 
-                g2d.color = chain[botNumber]!!.getPath(pathNumber).pathColor
+                g2d.color = chain[botNumber].getPath(pathNumber).pathColor
 
                 // If we are on the first path
                 if (pathNumber == 0) {
                     // Third for loop for each point
 
-                    for (pointNumber in chain[botNumber]!!.getPath(pathNumber).controlPoints.indices) {
+                    for (pointNumber in chain[botNumber].getPath(pathNumber).controlPoints.indices) {
                         // Update the chain ControlPoint locations
 
-                        chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].setCoordinates(
+                        chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].setCoordinates(
                             controlPointLocations[botNumber][pointNumber + nextPath]!!.x,
                             controlPointLocations[botNumber][pointNumber + nextPath]!!.y,
                             Point.CARTESIAN
@@ -438,17 +443,17 @@ class FieldPanel(
 
                         // Update the button locations
                         buttons[botNumber][pointNumber + nextPath]!!.setLocation(
-                            (chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].x * pixelsPerInch).toInt() - 5 + xOrigin,
-                            -(chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].y * pixelsPerInch).toInt() + 5 + yOrigin
+                            (chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].x * pixelsPerInch).toInt() - 5 + xOrigin,
+                            -(chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].y * pixelsPerInch).toInt() + 5 + yOrigin
                         )
                     }
                 } else {
                     // Third for loop for each point
 
-                    for (pointNumber in chain[botNumber]!!.getPath(pathNumber).controlPoints.indices) {
+                    for (pointNumber in chain[botNumber].getPath(pathNumber).controlPoints.indices) {
                         // Update the chain ControlPoint locations
 
-                        chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].setCoordinates(
+                        chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].setCoordinates(
                             controlPointLocations[botNumber][pointNumber + nextPath - minusPath]!!.x,
                             controlPointLocations[botNumber][pointNumber + nextPath - minusPath]!!.y,
                             Point.CARTESIAN
@@ -456,32 +461,32 @@ class FieldPanel(
 
                         // Update the button locations
                         buttons[botNumber][pointNumber + nextPath - minusPath]!!.setLocation(
-                            (chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].x * pixelsPerInch).toInt() - 5 + xOrigin,
-                            -(chain[botNumber]!!.getPath(pathNumber).controlPoints[pointNumber].y * pixelsPerInch).toInt() + 5 + yOrigin
+                            (chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].x * pixelsPerInch).toInt() - 5 + xOrigin,
+                            -(chain[botNumber].getPath(pathNumber).controlPoints[pointNumber].y * pixelsPerInch).toInt() + 5 + yOrigin
                         )
                     }
                 }
 
                 // Refresh DashboardDrawingPoints
-                chain[botNumber]!!.getPath(pathNumber).refreshDashboardDrawingPoints()
+                chain[botNumber].getPath(pathNumber).refreshDashboardDrawingPoints()
 
                 // Get DashboardDrawingPoints
-                curvePoints[botNumber][pathNumber] = chain[botNumber]!!.getPath(pathNumber).dashboardDrawingPoints
+                curvePoints[botNumber][pathNumber] = chain[botNumber].getPath(pathNumber).dashboardDrawingPoints
 
                 // for loop to draw the Bézier curves of each path
                 for (drawPoint in 0..99) {
                     // Draw a line between each drawing point
 
                     g2d.drawLine(
-                        (Math.round((curvePoints[botNumber][pathNumber][0][drawPoint] * pixelsPerInch))).toInt(),
+                        (Math.round(xOrigin + (curvePoints[botNumber][pathNumber][0][drawPoint] * pixelsPerInch))).toInt(),
                         (Math.round((yOrigin - (curvePoints[botNumber][pathNumber][1][drawPoint] * pixelsPerInch) + 10))).toInt(),
-                        (Math.round((curvePoints[botNumber][pathNumber][0][drawPoint + 1] * pixelsPerInch))).toInt(),
+                        (Math.round(xOrigin + (curvePoints[botNumber][pathNumber][0][drawPoint + 1] * pixelsPerInch))).toInt(),
                         (Math.round((yOrigin - (curvePoints[botNumber][pathNumber][1][drawPoint + 1] * pixelsPerInch) + 10))).toInt()
                     )
                 }
 
                 // Up nextPath and MinusPath
-                nextPath += chain[botNumber]!!.getPath(pathNumber).controlPoints.size
+                nextPath += chain[botNumber].getPath(pathNumber).controlPoints.size
                 minusPath++
             }
         }
@@ -504,16 +509,16 @@ class FieldPanel(
             var minusPath = 0
 
             // Second for loop for each path
-            for (pathNumber in 0 until chain[botNumber]!!.size()) {
+            for (pathNumber in 0 until chain[botNumber].size()) {
                 // Set the g2d Color to the path color
 
-                g2d.color = chain[botNumber]!!.getPath(pathNumber).pathColor
+                g2d.color = chain[botNumber].getPath(pathNumber).pathColor
 
                 // If we are on the first path
                 if (pathNumber == 0) {
                     // Third for loop for each point
 
-                    for (pointNumber in chain[botNumber]!!.getPath(pathNumber).controlPoints.indices) {
+                    for (pointNumber in chain[botNumber].getPath(pathNumber).controlPoints.indices) {
                         // Draw an oval on each button location
 
                         g2d.drawOval(
@@ -526,7 +531,7 @@ class FieldPanel(
                 } else {
                     // Third for loop for each point
 
-                    for (pointNumber in 1 until chain[botNumber]!!.getPath(pathNumber).controlPoints.size) {
+                    for (pointNumber in 1 until chain[botNumber].getPath(pathNumber).controlPoints.size) {
                         // Draw an oval on each button location
 
                         g2d.drawOval(
@@ -539,7 +544,7 @@ class FieldPanel(
                 }
 
                 // Up nextPath and minusPath
-                nextPath += chain[botNumber]!!.getPath(pathNumber).controlPoints.size
+                nextPath += chain[botNumber].getPath(pathNumber).controlPoints.size
                 minusPath++
             }
         }
@@ -575,7 +580,8 @@ class FieldPanel(
     }
 
     // MouseMotionListener for each button
-    internal inner class Listener(// JPanel and Point variables
+    internal inner class Listener // Listener class constructor
+        (// JPanel and Point variables
         var panel: JPanel?, var point: Point?
     ) :
         MouseMotionListener {
@@ -590,7 +596,7 @@ class FieldPanel(
 
             // Set the point location
             point?.setCoordinates(
-                (e.xOnScreen - fieldLocationX - 13 + 5) / pixelsPerInch,
+                -(xOrigin - (e.xOnScreen - fieldLocationX - 13 + 5)) / pixelsPerInch,
                 (yOrigin - (e.yOnScreen - fieldLocationY - 40)) / pixelsPerInch,
                 Point.CARTESIAN
             )
@@ -697,16 +703,11 @@ class FieldPanel(
         }
 
     // Class RunAnimation for animating
-    internal inner class RunAnimation(// botNumber variable
-
-        // Set the botNumber variable
-
+    internal inner class RunAnimation// Set the botNumber variable
+    // RunAnimation class contractor
+        (// botNumber variable
         var botNumber: Int
     ) : Thread() {
-        // botNumber variable
-
-        // Set the botNumber variable
-
         // On thread.start()
         override fun run() {
             // Create integer arrays for distanceToNextBotLocation
@@ -727,7 +728,7 @@ class FieldPanel(
 
                     distanceToNextBotLocationX[botNumber] =
                         botLocationX[botNumber] - Math.round(
-                            curvePoints[botNumber][animate2[botNumber]][0][animate1[botNumber] + 1] * pixelsPerInch -
+                            xOrigin + (curvePoints[botNumber][animate2[botNumber]][0][animate1[botNumber] + 1] * pixelsPerInch) -
                                     entities[botNumber].robotSize().width.toDouble() * pixelsPerInch / 2
                         ).toInt()
                     distanceToNextBotLocationY[botNumber] =
@@ -760,7 +761,7 @@ class FieldPanel(
                     animate2[botNumber]++
 
                     // Animate 2 is equal to the chain size
-                    if (animate2[botNumber] == chain[botNumber]!!.size()) {
+                    if (animate2[botNumber] == chain[botNumber].size()) {
                         // Animate 2 subtract 1
 
                         animate2[botNumber] -= 1
