@@ -323,11 +323,11 @@ public class FieldPanel extends JPanel {
         // DrawRobot function draws the robotImage
         DrawRobot(g2d);
 
-        // DrawControlPoints draws the control points of each chain path
-        DrawControlPoints(g2d);
-
         // DrawBezierCurves draws the curves of each path
         DrawBezierCurves(g2d);
+
+        // DrawControlPoints draws the control points of each chain path
+        DrawControlPoints(g2d);
 
         // Repaint updates the rendered screen
         repaint();
