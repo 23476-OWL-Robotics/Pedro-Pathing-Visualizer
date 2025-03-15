@@ -1,6 +1,10 @@
 # Pedro Pathing Visualizer
 Open-Source Visualizer for First Tech Challenge
 
+
+https://github.com/user-attachments/assets/d13d5bff-74a7-4dc9-9faa-6fe842e56755
+
+
 ## Table of Contents
 
 - [Installation | Android Studio](#installation--android-studio)
