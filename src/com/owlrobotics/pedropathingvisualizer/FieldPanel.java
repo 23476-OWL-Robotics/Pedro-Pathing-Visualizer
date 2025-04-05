@@ -110,7 +110,6 @@ public class FieldPanel extends JPanel {
 
         // Set the xOrigin and yOrigin based on planeOrigin
         xOrigin = planeOrigin.width;
-        System.out.println(xOrigin);
         yOrigin = planeOrigin.height - 10;
 
         // Set the runSingleBotAnimation array size
@@ -397,8 +396,9 @@ public class FieldPanel extends JPanel {
             // Rotate the toTransform to the needed robot rotation
             toTransform.rotate(
                     -botRotation[botNumber],
-                    botLocationX[botNumber]+ entities.get(botNumber).robotSize().width * pixelsPerInch / 2,
-                    botLocationY[botNumber] + entities.get(botNumber).robotSize().height * pixelsPerInch / 2);
+                    botLocationX[botNumber] + (entities.get(botNumber).robotSize().width * pixelsPerInch / 2),
+                    botLocationY[botNumber] + (entities.get(botNumber).robotSize().height * pixelsPerInch / 2));
+
 
             // Set the g2d transform to the toTransform
             g2d.setTransform(toTransform);
@@ -407,7 +407,8 @@ public class FieldPanel extends JPanel {
             g2d.drawImage(
                     robotImg[botNumber],
                     botLocationX[botNumber],
-                    botLocationY[botNumber], null);
+                    botLocationY[botNumber],
+                    null);
 
             // Reset the g2d transform
             g2d.setTransform(saveXForm);
@@ -520,8 +521,11 @@ public class FieldPanel extends JPanel {
                 // If we are on the first path
                 if (pathNumber == 0) {
 
+
                     // Third for loop for each point
                     for (int pointNumber = 0; pointNumber < chain.get(botNumber).getPath(pathNumber).getControlPoints().size(); pointNumber++) {
+
+                        buttons.get(botNumber)[pointNumber + nextPath].setBackground(chain.get(botNumber).getPath(pathNumber).getPathColor());
 
                         // Draw an oval on each button location
                         g2d.drawOval(
@@ -534,6 +538,8 @@ public class FieldPanel extends JPanel {
 
                     // Third for loop for each point
                     for (int pointNumber = 1; pointNumber < chain.get(botNumber).getPath(pathNumber).getControlPoints().size(); pointNumber++) {
+
+                        buttons.get(botNumber)[pointNumber + nextPath - minusPath].setBackground(chain.get(botNumber).getPath(pathNumber).getPathColor());
 
                         // Draw an oval on each button location
                         g2d.drawOval(

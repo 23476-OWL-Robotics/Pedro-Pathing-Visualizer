@@ -1,6 +1,7 @@
 package com.owlrobotics.pedropathingvisualizer;
 
 import com.owlrobotics.pedropathingvisualizer.pedropathing.entities.BotEntity;
+import com.owlrobotics.pedropathingvisualizer.pedropathing.pathgen.Path;
 import com.owlrobotics.pedropathingvisualizer.pedropathing.pathgen.PathChain;
 import com.owlrobotics.pedropathingvisualizer.pedropathing.pathgen.Point;
 import com.owlrobotics.pedropathingvisualizer.pedropathing.util.XYLayout;
@@ -9,6 +10,8 @@ import com.owlrobotics.pedropathingvisualizer.componentUI.CustomSliderUI;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
@@ -461,6 +464,69 @@ public class ControlPanel extends JPanel {
         }
     }
 
+    // The ColorButtons class will create a new JColorChooser when clicked, allowing you to change the line colors
+    class ColorButtons extends JButton {
+
+        Color color;
+        Path path;
+
+        public ColorButtons(Dimension location, Path path) {
+            this.color = path.getPathColor();
+            this.path = path;
+
+            this.setPreferredSize(new Dimension(20, 20));
+            this.setLocation(location.width, location.height);
+            this.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+
+            this.addActionListener(e -> NewColorPicker(path, color));
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            color = path.getPathColor();
+
+            Graphics2D g2d = (Graphics2D) g;
+
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2d.setColor(new Color(25, 25, 25));
+            g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+            g2d.setColor(color);
+            g2d.fillOval(3, 3, this.getWidth() - 5, this.getHeight() - 5);
+        }
+    }
+
+    // The NewColorPicker creates a ColorChooser to pick a color for the path
+    public void NewColorPicker(Path path, Color color) {
+
+        // Create the Frame and ColorChooser
+        JFrame frame = new JFrame("Color Picker");
+        JColorChooser colorChooser = new JColorChooser();
+
+        // Frame settings
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        // Add the colorChooser
+        frame.add(colorChooser);
+
+        // Pack the frame to set the size
+        frame.pack();
+
+        // Add a change listener to know when a color is picked
+        colorChooser.getSelectionModel().addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                path.setPathColor(colorChooser.getColor());
+            }
+        });
+    }
+
+
     // The EntityControlPanel class contains all the x and y control point values
     class EntityControlPanel extends JPanel {
 
@@ -474,6 +540,8 @@ public class ControlPanel extends JPanel {
 
         // ArrayList of LineNames
         ArrayList<JTextField> lineNames = new ArrayList<>();
+
+        ArrayList<ColorButtons> colorButtons = new ArrayList<>();
 
         // Point array pointLocations
         Point[] pointLocations;
@@ -626,6 +694,9 @@ public class ControlPanel extends JPanel {
 
                 // Create a new textField and add it to lineNames
                 lineNames.add(new JTextField());
+
+                // Create a new ColorButton and add it to colorButtons
+                colorButtons.add(new ColorButtons(new Dimension(60, textYLocation), chain.getPath(pathNumber)));
                 
                 // JTextField lineName Settings
                 lineNames.get(pathNumber).setForeground(Color.WHITE);
@@ -636,10 +707,13 @@ public class ControlPanel extends JPanel {
                 lineNames.get(pathNumber).setFont(textFont);
                 lineNames.get(pathNumber).setLocation(10, textYLocation);
                 lineNames.get(pathNumber).setText("Line " + (pathNumber + 1));
+
+                // Increase YLocation
                 textYLocation += lineNames.get(pathNumber).getHeight() + 10;
                 
                 // Add that line name to the JPanel
                 this.add(lineNames.get(pathNumber));
+                this.add(colorButtons.get(pathNumber));
 
                 // for loop for each control point
                 for (int pointNumber = 0; pointNumber < chain.getPath(pathNumber).getControlPoints().size() - 1; pointNumber++) {
