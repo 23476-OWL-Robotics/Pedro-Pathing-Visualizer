@@ -11,9 +11,11 @@ https://github.com/user-attachments/assets/524ef996-feef-4cb7-b5e4-237c58378231
 - [Installation | Development](#installation--development)
 - [Usage](#usage)
   - [Using the Control Panel](#using-the-control-panel)
-  - [Adding a Second Bot](#adding-a-second-bot)
+  - [Importing and Exporting Files](#importing-and-exporting-files)
+  - [Adding More Bots](#adding-more-bots)
   - [Field Rotation and Origin](#field-rotation-and-origin)
   - [Using Custom Images](#using-custom-images)
+- [Important Notes](#important-notes)
 - [Issues](#issues)
   - [Bad Class File](#bad-class-file)
   - [Unable to initialize main class](#unable-to-initialize-main-class)
@@ -22,14 +24,14 @@ https://github.com/user-attachments/assets/524ef996-feef-4cb7-b5e4-237c58378231
   
 ## Installation | Android Studio
 
-1. Download one of the .jar files from the Latest Release.
+1. Download the .jar file from the Latest Release.
 2. Open Android Studio and Right-Click the FtcRobotController module. Select `New -> Module`
    
    ![Screenshot 2025-03-13 105626](https://github.com/user-attachments/assets/98c9b41b-503e-4168-ab4e-58b3e8d3852c)
 
 3. Select `Java or Kotlin Library` from the list of module options.
   
-   Set the Library Name to `PedroPathingVisualizer` and the Package Name to `com.example.visualizer`
+   Set the Library Name to `Visualizer` and the Package Name to `com.example.visualizer`
 
    ![Screenshot 2025-03-13 110208](https://github.com/user-attachments/assets/1781216e-039a-4ff6-9bba-615ca6636552)
 
@@ -38,7 +40,7 @@ https://github.com/user-attachments/assets/524ef996-feef-4cb7-b5e4-237c58378231
    
     ![Screenshot 2025-03-13 110536](https://github.com/user-attachments/assets/7f13d5d0-97f0-4d61-8d60-b1ffd441a893)
 
-6. Under the `Dependencies` tab on the far left, select the `PedroPathingVisualizer` Module from the list of modules.
+6. Under the `Dependencies` tab on the far left, select the `Visualizer` Module from the list of modules.
    
     ![Screenshot 2025-03-13 110830](https://github.com/user-attachments/assets/68c393d9-d58d-4f56-9006-2c17d2a3ed15)
 
@@ -59,40 +61,41 @@ https://github.com/user-attachments/assets/524ef996-feef-4cb7-b5e4-237c58378231
     ```java
     package com.example.visualizer;
 
-    import com.owlrobotics.pedropathingvisualizer.PathVisualizer;
-    import com.owlrobotics.pedropathingvisualizer.pedropathing.entities.PedroPathingBotEntity;
-    import com.owlrobotics.pedropathingvisualizer.pedropathing.pathgen.BezierLine;
-    import com.owlrobotics.pedropathingvisualizer.pedropathing.pathgen.PathBuilder;
-    import com.owlrobotics.pedropathingvisualizer.pedropathing.pathgen.Point;
-    import com.owlrobotics.pedropathingvisualizer.pedropathing.util.Backgrounds;
-    import com.owlrobotics.pedropathingvisualizer.pedropathing.util.PlaneOrigin;
-    import com.owlrobotics.pedropathingvisualizer.pedropathing.util.RobotImages;
+    import com.owlrobotics.visualizer.PathVisualizer;
+    import com.owlrobotics.visualizer.pedropathing.entities.PedroPathingBotEntity;
+    import com.owlrobotics.visualizer.pedropathing.paths.*;
+    import com.owlrobotics.visualizer.pedropathing.geometry.*;
+    import com.owlrobotics.visualizer.ui.theme.DarkTheme;
+    import com.owlrobotics.visualizer.util.enums.Backgrounds;
+    import com.owlrobotics.visualizer.util.enums.PlaneOrigin;
+    import com.owlrobotics.visualizer.util.enums.RobotImages;
 
     public class MyClass {
-    
+
         public static void main(String[] args) {
-            PathVisualizer visualizer = new PathVisualizer(900, 60);
-        
-            PedroPathingBotEntity myBot = new PedroPathingBotEntity.Builder()
-                    .setRobotImage(RobotImages.Pedro_CLASSIC)
-                    .setRobotSize(16, 16)
-                    .build();
-        
-            myBot.createNewPath(new PathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Point(8, 88, Point.CARTESIAN),
-                                    new Point(48, 88, Point.CARTESIAN)
-                            )
-                    )
-                    .setTangentHeadingInterpolation()
-                    .build());
-        
+            PathVisualizer visualizer = new PathVisualizer(900, 144);
+
+            PedroPathingBotEntity test = new PedroPathingBotEntity.Builder()
+                .setRobotImage(RobotImages.Pedro_CLASSIC)
+                .setRobotSize(16, 16)
+                .build();
+
+            test.createNewPath(new PathBuilder()
+                .addPath(
+                        new BezierLine(
+                                new Pose(56, 8),
+                                new Pose(56, 36)
+                        )
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
+                .build());
+
             visualizer
-                    .setBackground(Backgrounds.IntoTheDeep_DARK)
-                    .setPlaneOrigin(PlaneOrigin.BOTTOM_LEFT)
-                    .addEntity(myBot)
-                    .start();
+                .setBackground(Backgrounds.Decode_DARK)
+                .setPlaneOrigin(PlaneOrigin.BOTTOM_LEFT)
+                .setTheme(new DarkTheme())
+                .addEntity(test)
+                .start();
         }
     }
     ```
@@ -118,7 +121,7 @@ If it brings up any errors, please look at the [Issues](#issues) section.
 
 2. Download and Install [Java 21](https://www.oracle.com/java/technologies/downloads/#java21) or later.
 
-3. Download and Extract the Zip file from either the `Java` or `Kotlin` branch, whichever language you prefer to code in.
+3. Download and Extract the Zip file from the Repository.
 
    ![Screenshot 2025-03-13 114318](https://github.com/user-attachments/assets/7d91bd32-7b3f-478e-a58f-83dd9abdc2c5)
 
@@ -142,9 +145,19 @@ The slider and slider play button at thr bottom of each tab control only that ro
 
 The play/pause button at the top of the Control Panel control all the added robots animations and will play/pause all of them if pressed. The reset button simply sets all the robots to the start of their respective paths.
 
-### Adding a Second Bot
+### Importing and Exporting Files
 
-It's really easy to add more bots to the visualizer. There technically isn't a limit but keep in mind that every bot added required its own CPU Thread to animate.
+Currently, the only files you can import are the .txt files exported by the Visualizer. I will try and add more import options in the future but for now only the .txt files will be allowed.
+
+#### Please note that the Web Visualizer trajectory files CANNOT be imported into this visualizer.
+
+Exporting your paths to either a .java file or a .txt file is really simple. Just click `File -> Export` and select your file format. Then select the directory you would like the file to export to from the File Chooser.
+
+If you want to see/copy the java code without exporting it, click `File -> Convert To -> Java`
+
+### Adding More Bots
+
+It's really easy to add more bots to the visualizer. I've limited the number you can add to four, but keep in mind that every bot added required its own CPU Thread to animate.
 
 1. Create a new PedroPathingBotEntity and set the Image and Size:
 
@@ -159,7 +172,7 @@ It's really easy to add more bots to the visualizer. There technically isn't a l
 
    ```java
    myBot2.createNewPath(new PathBuilder()
-                // Robot Path
+                // Robot Paths
                 .build());
    ```
 
@@ -170,12 +183,12 @@ It's really easy to add more bots to the visualizer. There technically isn't a l
 You can set the Field rotation by using the `.setFieldRotation()` function. It's best to put it directly after `.setBackground()` 
 The rotation angles are 90, 180, and 270. Use the FieldRotation enum inside the `.setFieldRotation()` parenthesis. The import is 
 
-`import com.owlrobotics.pedropathingvisualizer.pedropathing.util.FieldRotation;`
+`import com.owlrobotics.pedropathingvisualizer.util.FieldRotation;`
 
 
 You can set the Field origin by using the `.setFieldOrigin()` function. There is an origin enum for each corner of the field as well as the center.
 
-Import: `import com.owlrobotics.pedropathingvisualizer.pedropathing.util.PlaneOrigin;`
+Import: `import com.owlrobotics.pedropathingvisualizer.util.PlaneOrigin;`
 
 ### Using Custom Images
 
@@ -195,6 +208,15 @@ Setting the field image is basically the same thing but with `java.awt.image.Buf
 File file = new File("filepath");
 BufferedImage customFiledImage = ImageIO.read(file);
 ```
+
+## Important Notes
+
+The Visualizer was built to run on a Windows OS, but does run on most Linux Distributions. If you are running it on a Linux OS,
+expect the UI to not look quite right, as some of the distributions override Java's LookAndFeel. Also expect some performance/fps issues. I don't really know why, but it just doesn't run as well on Linux as it does Windows.
+
+I have not been able to test it on any MacBooks or ChromeBooks, so I have no clue how well it will run on those.
+
+If you are running it on Windows, and the visualizer looks either way to big, or too small to really see anything, try changing the Display Scaling in Settings. It runs best on 100% Scaling.
 
 ## Issues
 ### Bad Class File
@@ -252,6 +274,20 @@ If you get a different error message than the ones shown or get a gradle sync er
 ## Bugs
 
 If you find any bugs when the Visualizer is running, open an issue with the `bug` label at the GitHub Repo and I will try and fix it in the next release.
+
+## Credit
+
+Team Juice #16236 for the Decode Field Images
+
+Team #16166 Watt's Up for creating the Web-Based Visualizer, which I took a lot of inspiration from.
+
+Fred Perr's [Custom Java Titled Bar](https://github.com/FredPerr/CustomJavaTitledBar) 
+
+PedroPathing Dev Team for the Path Generation
+
+If I am using your code, and you would like to be credited please send me a message through [GitHub](https://github.com/Maxwell2345) or open an [issue](https://github.com/23476-OWL-Robotics/Pedro-Pathing-Visualizer/issues).
+
+
 
 
 
